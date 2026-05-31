@@ -17,6 +17,7 @@ A small browser-based calculator for estimating Amazon part-time weekly income.
 ## Overtime rules
 
 - 0–40 weekly hours are paid at the base rate.
+- Night-shift hours are paid 16% more, including extended hours on night shifts.
 - Hours above 40 and up to 50 are paid at 1.5×.
 - Hours above 50 are paid at 2×.
 

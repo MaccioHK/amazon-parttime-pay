@@ -4,6 +4,7 @@ const EXTENDED_HOURS = 2;
 const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
 const MAX_WEEKLY_HOURS = 58;
+const NIGHT_SHIFT_MULTIPLIER = 1.16;
 
 const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false }));
 
@@ -28,6 +29,10 @@ function formatMoney(value) {
   }).format(value);
 }
 
+function roundCurrency(value) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
 function getDayHours(day) {
   if (!day.worked) {
     return 0;
@@ -36,14 +41,72 @@ function getDayHours(day) {
   return SHIFT_HOURS + (day.extended ? EXTENDED_HOURS : 0);
 }
 
-function calculatePay(totalHours, baseRate) {
-  const regularHours = Math.min(totalHours, REGULAR_LIMIT);
-  const timeAndHalfHours = Math.min(Math.max(totalHours - REGULAR_LIMIT, 0), TIME_AND_HALF_LIMIT - REGULAR_LIMIT);
-  const doubleTimeHours = Math.max(totalHours - TIME_AND_HALF_LIMIT, 0);
-  const paidHours = regularHours + timeAndHalfHours * 1.5 + doubleTimeHours * 2;
-  const totalPay = paidHours * baseRate;
+function getOvertimeMultiplier(hourIndex) {
+  if (hourIndex >= TIME_AND_HALF_LIMIT) {
+    return 2;
+  }
 
-  return { regularHours, timeAndHalfHours, doubleTimeHours, paidHours, totalPay };
+  if (hourIndex >= REGULAR_LIMIT) {
+    return 1.5;
+  }
+
+  return 1;
+}
+
+function calculatePay(days, baseRate) {
+  let workedHoursSoFar = 0;
+  let regularHours = 0;
+  let timeAndHalfHours = 0;
+  let doubleTimeHours = 0;
+  let nightPremiumHours = 0;
+  let paidHours = 0;
+  let totalPay = 0;
+
+  days.forEach((day) => {
+    const dayHours = getDayHours(day);
+
+    if (dayHours === 0) {
+      return;
+    }
+
+    const shiftMultiplier = day.shift === "night" ? NIGHT_SHIFT_MULTIPLIER : 1;
+
+    if (day.shift === "night") {
+      nightPremiumHours += dayHours;
+    }
+
+    let remainingDayHours = dayHours;
+
+    while (remainingDayHours > 0) {
+      const overtimeMultiplier = getOvertimeMultiplier(workedHoursSoFar);
+      const tierEnd = overtimeMultiplier === 1 ? REGULAR_LIMIT : overtimeMultiplier === 1.5 ? TIME_AND_HALF_LIMIT : Infinity;
+      const chunkHours = Math.min(remainingDayHours, tierEnd - workedHoursSoFar);
+      const paidHourMultiplier = overtimeMultiplier * shiftMultiplier;
+
+      if (overtimeMultiplier === 1) {
+        regularHours += chunkHours;
+      } else if (overtimeMultiplier === 1.5) {
+        timeAndHalfHours += chunkHours;
+      } else {
+        doubleTimeHours += chunkHours;
+      }
+
+      paidHours += chunkHours * paidHourMultiplier;
+      totalPay += chunkHours * baseRate * paidHourMultiplier;
+      workedHoursSoFar += chunkHours;
+      remainingDayHours -= chunkHours;
+    }
+  });
+
+  return {
+    totalHours: workedHoursSoFar,
+    regularHours,
+    timeAndHalfHours,
+    doubleTimeHours,
+    nightPremiumHours,
+    paidHours,
+    totalPay: roundCurrency(totalPay),
+  };
 }
 
 function findLongestWorkStreak() {
@@ -161,15 +224,14 @@ function renderScheduleCards() {
 }
 
 function update() {
-  const totalHours = state.reduce((sum, day) => sum + getDayHours(day), 0);
   const baseRate = Math.max(Number(baseRateInput.value) || 0, 0);
-  const pay = calculatePay(totalHours, baseRate);
-  const validationMessages = validateSchedule(totalHours);
+  const pay = calculatePay(state, baseRate);
+  const validationMessages = validateSchedule(pay.totalHours);
 
-  totalHoursOutput.textContent = formatHours(totalHours);
+  totalHoursOutput.textContent = formatHours(pay.totalHours);
   paidHoursOutput.textContent = formatHours(pay.paidHours);
   totalPayOutput.textContent = formatMoney(pay.totalPay);
-  breakdownOutput.textContent = `${formatHours(pay.regularHours)} regular hours, ${formatHours(pay.timeAndHalfHours)} hours at 1.5×, and ${formatHours(pay.doubleTimeHours)} hours at 2×.`;
+  breakdownOutput.textContent = `${formatHours(pay.regularHours)} regular hours, ${formatHours(pay.timeAndHalfHours)} hours at 1.5×, ${formatHours(pay.doubleTimeHours)} hours at 2×, and ${formatHours(pay.nightPremiumHours)} night-shift hours with a 16% premium.`;
 
   renderScheduleCards();
   renderValidation(validationMessages);
