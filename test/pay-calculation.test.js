@@ -6,6 +6,7 @@ const EXTENDED_HOURS = 2;
 const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
 const NIGHT_SHIFT_MULTIPLIER = 1.16;
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 function roundCurrency(value) {
   return Math.round((value + Number.EPSILON) * 100) / 100;
@@ -91,6 +92,26 @@ function day(worked = true, shift = "morning", extended = false) {
   return { worked, shift, extended };
 }
 
+function findShiftSequenceErrors(days, rollingWeekEnabled) {
+  const errors = [];
+  const dayPairs = DAYS.slice(0, -1).map((_, index) => [index, index + 1]);
+
+  if (rollingWeekEnabled) {
+    dayPairs.push([DAYS.length - 1, 0]);
+  }
+
+  dayPairs.forEach(([currentIndex, nextIndex]) => {
+    const current = days[currentIndex];
+    const next = days[nextIndex];
+
+    if (current.worked && next.worked && current.shift === "night" && next.shift === "morning") {
+      errors.push(`${DAYS[currentIndex]} night shift cannot be followed by ${DAYS[nextIndex]} morning shift.`);
+    }
+  });
+
+  return errors;
+}
+
 test("pays regular morning hours up to 40", () => {
   assert.deepEqual(calculatePay([day(), day(), day(), day()], 20), {
     totalHours: 32,
@@ -149,4 +170,19 @@ test("does not apply the night premium to morning extended hours", () => {
     paidHours: 10,
     totalPay: 200,
   });
+});
+
+
+test("keeps Saturday night to Sunday morning valid when rolling week is off", () => {
+  const schedule = [day(true, "morning"), day(false), day(false), day(false), day(false), day(false), day(true, "night")];
+
+  assert.deepEqual(findShiftSequenceErrors(schedule, false), []);
+});
+
+test("flags Saturday night followed by Sunday morning when rolling week is on", () => {
+  const schedule = [day(true, "morning"), day(false), day(false), day(false), day(false), day(false), day(true, "night")];
+
+  assert.deepEqual(findShiftSequenceErrors(schedule, true), [
+    "Saturday night shift cannot be followed by Sunday morning shift.",
+  ]);
 });

@@ -96,10 +96,25 @@ h2 {
   align-items: start;
 }
 
+.rate-field,
+.rolling-week-toggle {
+  font-weight: 700;
+}
+
 .rate-field {
   display: grid;
   gap: 8px;
-  font-weight: 700;
+}
+
+.rolling-week-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: end;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
 }
 
 .money-input {

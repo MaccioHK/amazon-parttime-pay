@@ -8,9 +8,11 @@ A small browser-based calculator for estimating Amazon part-time weekly income.
 - Accepts a base hourly rate and a daily schedule with morning/night shift indicators.
 - Counts each morning or night shift as 8 working hours.
 - Adds 2 working hours when the extended-shift indicator is selected.
+- Applies a 16% pay premium to night-shift hours, including extended hours only when the night shift is selected.
 - Validates the weekly schedule:
   - maximum 6 consecutive worked days in the displayed pay week,
   - night shifts cannot be followed by morning shifts on the next day,
+  - optional rolling week validation also checks Saturday night followed by Sunday morning,
   - maximum 58 working hours per week.
 - Shows total working hours, weighted paid hours, and total pay.
 

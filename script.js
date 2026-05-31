@@ -11,6 +11,7 @@ const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false
 const grid = document.querySelector("#schedule-grid");
 const template = document.querySelector("#day-card-template");
 const baseRateInput = document.querySelector("#base-rate");
+const rollingWeekInput = document.querySelector("#rolling-week");
 const resetButton = document.querySelector("#reset-schedule");
 const validationList = document.querySelector("#validation-list");
 const totalHoursOutput = document.querySelector("#total-hours");
@@ -125,17 +126,22 @@ function findLongestWorkStreak() {
   return longest;
 }
 
-function findShiftSequenceErrors() {
+function findShiftSequenceErrors(rollingWeekEnabled) {
   const errors = [];
+  const dayPairs = DAYS.slice(0, -1).map((_, index) => [index, index + 1]);
 
-  for (let index = 0; index < state.length - 1; index += 1) {
-    const current = state[index];
-    const next = state[index + 1];
+  if (rollingWeekEnabled) {
+    dayPairs.push([DAYS.length - 1, 0]);
+  }
+
+  dayPairs.forEach(([currentIndex, nextIndex]) => {
+    const current = state[currentIndex];
+    const next = state[nextIndex];
 
     if (current.worked && next.worked && current.shift === "night" && next.shift === "morning") {
-      errors.push(`${DAYS[index]} night shift cannot be followed by ${DAYS[index + 1]} morning shift.`);
+      errors.push(`${DAYS[currentIndex]} night shift cannot be followed by ${DAYS[nextIndex]} morning shift.`);
     }
-  }
+  });
 
   return errors;
 }
@@ -144,7 +150,7 @@ function validateSchedule(totalHours) {
   const messages = [];
   const baseRate = Number(baseRateInput.value);
   const longestStreak = findLongestWorkStreak();
-  const shiftSequenceErrors = findShiftSequenceErrors();
+  const shiftSequenceErrors = findShiftSequenceErrors(rollingWeekInput.checked);
 
   if (!Number.isFinite(baseRate) || baseRate < 0) {
     messages.push({ valid: false, text: "Base rate must be zero or greater." });
@@ -247,5 +253,6 @@ resetButton.addEventListener("click", () => {
 });
 
 baseRateInput.addEventListener("input", update);
+rollingWeekInput.addEventListener("change", update);
 
 update();
