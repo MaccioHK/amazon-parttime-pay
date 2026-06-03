@@ -5,6 +5,7 @@ const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
 const MAX_WEEKLY_HOURS = 58;
 const NIGHT_SHIFT_MULTIPLIER = 1.16;
+const SAVED_GRID_COLUMNS = "44px 44px 90px 96px repeat(7, 105px) 86px 86px 96px 74px 74px 74px 100px minmax(220px, 1.4fr)";
 
 const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false }));
 const savedRecords = [];
@@ -249,6 +250,8 @@ function renderSavedRecords() {
     const deleteCheckbox = document.createElement("input");
 
     row.className = "saved-grid-row";
+    row.style.display = "grid";
+    row.style.gridTemplateColumns = SAVED_GRID_COLUMNS;
     row.setAttribute("role", "row");
 
     selectCell.className = "saved-grid-control";
