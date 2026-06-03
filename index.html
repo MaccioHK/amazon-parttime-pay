@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amazon Part-Time Pay Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">Sunday–Saturday weekly calculator</p>
+      <h1 id="page-title">Amazon part-time pay calculator</h1>
+      <p>
+        Enter your base hourly rate, choose the days you work, and mark each shift as morning or night.
+        Every shift counts as 8 hours, and an extended shift adds 2 more hours.
+      </p>
+    </section>
+
+    <section class="card controls" aria-labelledby="setup-title">
+      <div>
+        <h2 id="setup-title">Pay setup</h2>
+        <p class="muted">Overtime is calculated for the fixed pay week from Sunday through Saturday.</p>
+      </div>
+      <label class="rate-field">
+        Base rate per hour
+        <span class="money-input">
+          <span aria-hidden="true">£</span>
+          <input id="base-rate" type="number" inputmode="decimal" min="0" step="0.01" value="15.30" aria-describedby="rate-help">
+        </span>
+      </label>
+      <label class="rolling-week-toggle">
+        <input id="rolling-week" type="checkbox" checked>
+        Rolling week validation
+      </label>
+      <p id="rate-help" class="help-text">Regular hours are paid at base rate. Night shift hours are paid 16% more, including extended hours on night shifts. Weekly hours above 40 and up to 50 are paid at 1.5×. Hours above 50 are paid at 2×. Rolling week validation is on by default, so Saturday night followed by Sunday morning is also checked.</p>
+    </section>
+
+    <section class="card" aria-labelledby="schedule-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="schedule-title">Weekly schedule</h2>
+          <p class="muted">Validation: max 6 consecutive worked days, night shifts cannot be followed by morning shifts, and weekly hours cannot exceed 58.</p>
+        </div>
+        <div class="schedule-actions">
+          <button id="save-schedule" type="button" class="secondary-button">Save</button>
+          <button id="reset-schedule" type="button" class="secondary-button">Clear schedule</button>
+        </div>
+      </div>
+
+      <div class="schedule-grid" id="schedule-grid" role="group" aria-label="Daily shift schedule"></div>
+    </section>
+
+    <section class="results-layout">
+      <section class="card" aria-labelledby="validation-title">
+        <h2 id="validation-title">Validation</h2>
+        <ul id="validation-list" class="validation-list" aria-live="polite"></ul>
+      </section>
+
+      <section class="card summary" aria-labelledby="summary-title">
+        <h2 id="summary-title">Output</h2>
+        <dl>
+          <div>
+            <dt>Total working hour</dt>
+            <dd id="total-hours">0</dd>
+          </div>
+          <div>
+            <dt>Total paid hour</dt>
+            <dd id="paid-hours">0</dd>
+          </div>
+          <div>
+            <dt>Total pay</dt>
+            <dd id="total-pay">£0.00</dd>
+          </div>
+        </dl>
+        <p id="breakdown" class="help-text"></p>
+      </section>
+    </section>
+
+    <section class="card saved-records" aria-labelledby="saved-records-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="saved-records-title">Saved schedules</h2>
+          <p class="muted">Saved rows display in a spreadsheet-style grid. Click any row to populate the weekly schedule, tick rows to select them, and delete selected rows.</p>
+        </div>
+        <button id="delete-saved" type="button" class="secondary-button" disabled>Delete selected</button>
+      </div>
+      <div class="saved-grid-wrap">
+        <div class="saved-grid" role="grid" aria-label="Saved schedules">
+          <div class="saved-grid-row saved-grid-header" role="row" style="display: grid; grid-template-columns: 42px 42px 96px 54px repeat(7, 116px) 100px 100px 108px 86px 78px 78px 108px 280px;">
+            <div role="columnheader">S</div>
+            <div role="columnheader">D</div>
+            <div role="columnheader">Base Rate</div>
+            <div role="columnheader">RW</div>
+            <div role="columnheader">Sunday</div>
+            <div role="columnheader">Monday</div>
+            <div role="columnheader">Tuesday</div>
+            <div role="columnheader">Wednesday</div>
+            <div role="columnheader">Thursday</div>
+            <div role="columnheader">Friday</div>
+            <div role="columnheader">Saturday</div>
+            <div role="columnheader">Total working hour</div>
+            <div role="columnheader">Total paid hour</div>
+            <div role="columnheader">Total pay</div>
+            <div role="columnheader">Regular</div>
+            <div role="columnheader">1.5×</div>
+            <div role="columnheader">2×</div>
+            <div role="columnheader">Night premium</div>
+            <div role="columnheader">Validation</div>
+          </div>
+          <div id="saved-records-body"></div>
+        </div>
+      </div>
+      <p id="saved-records-empty" class="help-text">No saved schedules yet. Click Save to add the current weekly schedule.</p>
+      <p id="saved-records-count" class="help-text"></p>
+    </section>
+  </main>
+
+  <template id="day-card-template">
+    <article class="day-card">
+      <label class="work-toggle">
+        <input type="checkbox" class="worked-input">
+        <span class="day-name"></span>
+      </label>
+      <div class="shift-options" aria-label="Shift type">
+        <label>
+          <input type="radio" value="morning" class="shift-input">
+          Morning
+        </label>
+        <label>
+          <input type="radio" value="night" class="shift-input">
+          Night
+        </label>
+      </div>
+      <label class="extend-toggle">
+        <input type="checkbox" class="extend-input">
+        Extended shift (+2h)
+      </label>
+      <p class="day-hours">0 hours</p>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
