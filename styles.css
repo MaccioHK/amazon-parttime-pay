@@ -371,6 +371,7 @@ h2 {
   align-items: flex-start;
   background: #f8fafc;
   color: #667085;
+  text-transform: none !important;
 }
 
 .saved-grid-control {
