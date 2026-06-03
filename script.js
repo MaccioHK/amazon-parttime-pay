@@ -228,6 +228,12 @@ function populateSchedule(record) {
   update();
 }
 
+function selectSavedRecord(record) {
+  selectedSavedRecordId = record.id;
+  populateSchedule(record);
+  renderSavedRecords();
+}
+
 function addGridCell(row, text, className = "") {
   const cell = document.createElement("div");
   cell.className = className;
@@ -246,32 +252,34 @@ function renderSavedRecords() {
     const row = document.createElement("div");
     const selectCell = document.createElement("div");
     const deleteCell = document.createElement("div");
-    const selectRadio = document.createElement("input");
     const deleteCheckbox = document.createElement("input");
+    const isSelected = record.id === selectedSavedRecordId;
 
-    row.className = "saved-grid-row";
+    row.className = `saved-grid-row${isSelected ? " is-selected" : ""}`;
     row.style.display = "grid";
     row.style.gridTemplateColumns = SAVED_GRID_COLUMNS;
     row.setAttribute("role", "row");
-
-    selectCell.className = "saved-grid-control";
-    selectCell.setAttribute("role", "gridcell");
-    selectRadio.type = "radio";
-    selectRadio.name = "saved-schedule-select";
-    selectRadio.checked = record.id === selectedSavedRecordId;
-    selectRadio.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1}`);
-    selectRadio.addEventListener("change", () => {
-      selectedSavedRecordId = record.id;
-      populateSchedule(record);
-      renderSavedRecords();
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-selected", String(isSelected));
+    row.addEventListener("click", () => selectSavedRecord(record));
+    row.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectSavedRecord(record);
+      }
     });
-    selectCell.appendChild(selectRadio);
+
+    selectCell.className = "saved-grid-control saved-grid-select-indicator";
+    selectCell.setAttribute("role", "gridcell");
+    selectCell.textContent = isSelected ? "✓" : "";
 
     deleteCell.className = "saved-grid-control";
     deleteCell.setAttribute("role", "gridcell");
     deleteCheckbox.type = "checkbox";
     deleteCheckbox.checked = record.selectedForDelete;
     deleteCheckbox.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1} for deletion`);
+    deleteCheckbox.addEventListener("click", (event) => event.stopPropagation());
+    deleteCheckbox.addEventListener("keydown", (event) => event.stopPropagation());
     deleteCheckbox.addEventListener("change", () => {
       record.selectedForDelete = deleteCheckbox.checked;
       renderSavedRecords();
