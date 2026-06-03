@@ -8,6 +8,7 @@ const NIGHT_SHIFT_MULTIPLIER = 1.16;
 
 const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false }));
 const savedRecords = [];
+let selectedSavedRecordId = null;
 
 const grid = document.querySelector("#schedule-grid");
 const template = document.querySelector("#day-card-template");
@@ -191,7 +192,6 @@ function createRecordId() {
 function createSavedRecord(pay, validationMessages) {
   return {
     id: createRecordId(),
-    savedAt: new Date(),
     baseRate: Math.max(Number(baseRateInput.value) || 0, 0),
     rollingWeek: rollingWeekInput.checked,
     schedule: cloneSchedule(state),
@@ -227,6 +227,14 @@ function populateSchedule(record) {
   update();
 }
 
+function addGridCell(row, text, className = "") {
+  const cell = document.createElement("div");
+  cell.className = className;
+  cell.setAttribute("role", "gridcell");
+  cell.textContent = text;
+  row.appendChild(cell);
+}
+
 function renderSavedRecords() {
   savedRecordsBody.replaceChildren();
   savedRecordsEmpty.style.display = savedRecords.length > 0 ? "none" : "block";
@@ -234,19 +242,30 @@ function renderSavedRecords() {
   deleteSavedButton.disabled = !savedRecords.some((record) => record.selectedForDelete);
 
   savedRecords.forEach((record, recordIndex) => {
-    const row = document.createElement("tr");
-    const loadCell = document.createElement("td");
-    const deleteCell = document.createElement("td");
-    const loadButton = document.createElement("button");
+    const row = document.createElement("div");
+    const selectCell = document.createElement("div");
+    const deleteCell = document.createElement("div");
+    const selectRadio = document.createElement("input");
     const deleteCheckbox = document.createElement("input");
 
-    loadButton.type = "button";
-    loadButton.className = "load-button";
-    loadButton.textContent = "Select";
-    loadButton.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1}`);
-    loadButton.addEventListener("click", () => populateSchedule(record));
-    loadCell.appendChild(loadButton);
+    row.className = "saved-grid-row";
+    row.setAttribute("role", "row");
 
+    selectCell.className = "saved-grid-control";
+    selectCell.setAttribute("role", "gridcell");
+    selectRadio.type = "radio";
+    selectRadio.name = "saved-schedule-select";
+    selectRadio.checked = record.id === selectedSavedRecordId;
+    selectRadio.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1}`);
+    selectRadio.addEventListener("change", () => {
+      selectedSavedRecordId = record.id;
+      populateSchedule(record);
+      renderSavedRecords();
+    });
+    selectCell.appendChild(selectRadio);
+
+    deleteCell.className = "saved-grid-control";
+    deleteCell.setAttribute("role", "gridcell");
     deleteCheckbox.type = "checkbox";
     deleteCheckbox.checked = record.selectedForDelete;
     deleteCheckbox.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1} for deletion`);
@@ -256,11 +275,10 @@ function renderSavedRecords() {
     });
     deleteCell.appendChild(deleteCheckbox);
 
-    row.appendChild(loadCell);
+    row.appendChild(selectCell);
     row.appendChild(deleteCell);
 
     const cells = [
-      record.savedAt.toLocaleString(),
       formatMoney(record.baseRate),
       record.rollingWeek ? "On" : "Off",
       ...record.schedule.map(getDaySummary),
@@ -275,18 +293,10 @@ function renderSavedRecords() {
     ];
 
     cells.forEach((cellText, cellIndex) => {
-      const cell = document.createElement("td");
-      cell.textContent = cellText;
-
-      if (cellIndex >= 3 && cellIndex <= 9) {
-        cell.className = "day-cell";
-      }
-
-      if (cellIndex === cells.length - 1) {
-        cell.className = "validation-cell";
-      }
-
-      row.appendChild(cell);
+      const isDayCell = cellIndex >= 2 && cellIndex <= 8;
+      const isValidationCell = cellIndex === cells.length - 1;
+      const className = isValidationCell ? "validation-cell" : isDayCell ? "day-cell" : "";
+      addGridCell(row, cellText, className);
     });
 
     savedRecordsBody.appendChild(row);
@@ -375,6 +385,9 @@ saveButton.addEventListener("click", () => {
 deleteSavedButton.addEventListener("click", () => {
   for (let index = savedRecords.length - 1; index >= 0; index -= 1) {
     if (savedRecords[index].selectedForDelete) {
+      if (savedRecords[index].id === selectedSavedRecordId) {
+        selectedSavedRecordId = null;
+      }
       savedRecords.splice(index, 1);
     }
   }

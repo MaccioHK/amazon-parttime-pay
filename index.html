@@ -81,38 +81,35 @@
       <div class="section-heading">
         <div>
           <h2 id="saved-records-title">Saved schedules</h2>
-          <p class="muted">Saved rows work like an Excel sheet. Use Select to populate the weekly schedule, tick rows to select them, and delete selected rows.</p>
+          <p class="muted">Saved rows display in a grid. Use the left radio button to populate the weekly schedule, tick rows to select them, and delete selected rows.</p>
         </div>
         <button id="delete-saved" type="button" class="secondary-button" disabled>Delete selected</button>
       </div>
-      <div class="table-wrap">
-        <table class="saved-table">
-          <thead>
-            <tr>
-              <th scope="col">Select</th>
-              <th scope="col">Delete</th>
-              <th scope="col">Saved</th>
-              <th scope="col">Base rate</th>
-              <th scope="col">Rolling week</th>
-              <th scope="col">Sunday</th>
-              <th scope="col">Monday</th>
-              <th scope="col">Tuesday</th>
-              <th scope="col">Wednesday</th>
-              <th scope="col">Thursday</th>
-              <th scope="col">Friday</th>
-              <th scope="col">Saturday</th>
-              <th scope="col">Total working hour</th>
-              <th scope="col">Total paid hour</th>
-              <th scope="col">Total pay</th>
-              <th scope="col">Regular</th>
-              <th scope="col">1.5×</th>
-              <th scope="col">2×</th>
-              <th scope="col">Night premium</th>
-              <th scope="col">Validation</th>
-            </tr>
-          </thead>
-          <tbody id="saved-records-body"></tbody>
-        </table>
+      <div class="saved-grid-wrap">
+        <div class="saved-grid" role="grid" aria-label="Saved schedules">
+          <div class="saved-grid-row saved-grid-header" role="row">
+            <div aria-hidden="true"></div>
+            <div aria-hidden="true"></div>
+            <div role="columnheader">Base rate</div>
+            <div role="columnheader">Rolling week</div>
+            <div role="columnheader">Sunday</div>
+            <div role="columnheader">Monday</div>
+            <div role="columnheader">Tuesday</div>
+            <div role="columnheader">Wednesday</div>
+            <div role="columnheader">Thursday</div>
+            <div role="columnheader">Friday</div>
+            <div role="columnheader">Saturday</div>
+            <div role="columnheader">Total working hour</div>
+            <div role="columnheader">Total paid hour</div>
+            <div role="columnheader">Total pay</div>
+            <div role="columnheader">Regular</div>
+            <div role="columnheader">1.5×</div>
+            <div role="columnheader">2×</div>
+            <div role="columnheader">Night premium</div>
+            <div role="columnheader">Validation</div>
+          </div>
+          <div id="saved-records-body"></div>
+        </div>
       </div>
       <p id="saved-records-empty" class="help-text">No saved schedules yet. Click Save to add the current weekly schedule.</p>
       <p id="saved-records-count" class="help-text"></p>
