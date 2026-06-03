@@ -234,6 +234,14 @@ function selectSavedRecord(record) {
   renderSavedRecords();
 }
 
+function selectSavedRecordById(recordId) {
+  const record = savedRecords.find((savedRecord) => savedRecord.id === recordId);
+
+  if (record) {
+    selectSavedRecord(record);
+  }
+}
+
 function addGridCell(row, text, className = "") {
   const cell = document.createElement("div");
   cell.className = className;
@@ -258,16 +266,10 @@ function renderSavedRecords() {
     row.className = `saved-grid-row${isSelected ? " is-selected" : ""}`;
     row.style.display = "grid";
     row.style.gridTemplateColumns = SAVED_GRID_COLUMNS;
+    row.dataset.recordId = record.id;
     row.setAttribute("role", "row");
     row.setAttribute("tabindex", "0");
     row.setAttribute("aria-selected", String(isSelected));
-    row.addEventListener("click", () => selectSavedRecord(record));
-    row.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        selectSavedRecord(record);
-      }
-    });
 
     selectCell.className = "saved-grid-control saved-grid-select-indicator";
     selectCell.setAttribute("role", "gridcell");
@@ -386,6 +388,35 @@ function update() {
 
   return { pay, validationMessages };
 }
+
+savedRecordsBody.addEventListener("click", (event) => {
+  if (event.target.closest('input[type="checkbox"]')) {
+    return;
+  }
+
+  const row = event.target.closest(".saved-grid-row");
+
+  if (row?.dataset.recordId) {
+    selectSavedRecordById(row.dataset.recordId);
+  }
+});
+
+savedRecordsBody.addEventListener("keydown", (event) => {
+  if (event.target.closest('input[type="checkbox"]')) {
+    return;
+  }
+
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  const row = event.target.closest(".saved-grid-row");
+
+  if (row?.dataset.recordId) {
+    event.preventDefault();
+    selectSavedRecordById(row.dataset.recordId);
+  }
+});
 
 saveButton.addEventListener("click", () => {
   const { pay, validationMessages } = update();
