@@ -21,8 +21,10 @@ const totalHoursOutput = document.querySelector("#total-hours");
 const paidHoursOutput = document.querySelector("#paid-hours");
 const totalPayOutput = document.querySelector("#total-pay");
 const breakdownOutput = document.querySelector("#breakdown");
+const savedRecordsSection = document.querySelector(".saved-records");
 const savedRecordsBody = document.querySelector("#saved-records-body");
 const savedRecordsEmpty = document.querySelector("#saved-records-empty");
+const savedRecordsCount = document.querySelector("#saved-records-count");
 
 function formatHours(value) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
@@ -183,10 +185,6 @@ function cloneSchedule(days) {
 }
 
 function createRecordId() {
-  if (globalThis.crypto?.randomUUID) {
-    return globalThis.crypto.randomUUID();
-  }
-
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
@@ -231,7 +229,8 @@ function populateSchedule(record) {
 
 function renderSavedRecords() {
   savedRecordsBody.replaceChildren();
-  savedRecordsEmpty.hidden = savedRecords.length > 0;
+  savedRecordsEmpty.style.display = savedRecords.length > 0 ? "none" : "block";
+  savedRecordsCount.textContent = savedRecords.length === 0 ? "" : `${savedRecords.length} saved schedule${savedRecords.length === 1 ? "" : "s"}.`;
   deleteSavedButton.disabled = !savedRecords.some((record) => record.selectedForDelete);
 
   savedRecords.forEach((record, recordIndex) => {
@@ -246,7 +245,7 @@ function renderSavedRecords() {
     loadButton.textContent = "Select";
     loadButton.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1}`);
     loadButton.addEventListener("click", () => populateSchedule(record));
-    loadCell.append(loadButton);
+    loadCell.appendChild(loadButton);
 
     deleteCheckbox.type = "checkbox";
     deleteCheckbox.checked = record.selectedForDelete;
@@ -255,9 +254,10 @@ function renderSavedRecords() {
       record.selectedForDelete = deleteCheckbox.checked;
       renderSavedRecords();
     });
-    deleteCell.append(deleteCheckbox);
+    deleteCell.appendChild(deleteCheckbox);
 
-    row.append(loadCell, deleteCell);
+    row.appendChild(loadCell);
+    row.appendChild(deleteCell);
 
     const cells = [
       record.savedAt.toLocaleString(),
@@ -286,10 +286,10 @@ function renderSavedRecords() {
         cell.className = "validation-cell";
       }
 
-      row.append(cell);
+      row.appendChild(cell);
     });
 
-    savedRecordsBody.append(row);
+    savedRecordsBody.appendChild(row);
   });
 }
 
@@ -369,6 +369,7 @@ saveButton.addEventListener("click", () => {
   const { pay, validationMessages } = update();
   savedRecords.push(createSavedRecord(pay, validationMessages));
   renderSavedRecords();
+  savedRecordsSection.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 deleteSavedButton.addEventListener("click", () => {

@@ -43,7 +43,7 @@
           <p class="muted">Validation: max 6 consecutive worked days, night shifts cannot be followed by morning shifts, and weekly hours cannot exceed 58.</p>
         </div>
         <div class="schedule-actions">
-          <button id="save-schedule" type="button" class="primary-button">Save</button>
+          <button id="save-schedule" type="button" class="secondary-button">Save</button>
           <button id="reset-schedule" type="button" class="secondary-button">Clear schedule</button>
         </div>
       </div>
@@ -83,7 +83,7 @@
           <h2 id="saved-records-title">Saved schedules</h2>
           <p class="muted">Saved rows work like an Excel sheet. Use Select to populate the weekly schedule, tick rows to select them, and delete selected rows.</p>
         </div>
-        <button id="delete-saved" type="button" class="danger-button" disabled>Delete selected</button>
+        <button id="delete-saved" type="button" class="secondary-button" disabled>Delete selected</button>
       </div>
       <div class="table-wrap">
         <table class="saved-table">
@@ -115,6 +115,7 @@
         </table>
       </div>
       <p id="saved-records-empty" class="help-text">No saved schedules yet. Click Save to add the current weekly schedule.</p>
+      <p id="saved-records-count" class="help-text"></p>
     </section>
   </main>
 

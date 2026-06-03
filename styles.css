@@ -294,32 +294,11 @@ h2 {
   justify-content: end;
 }
 
-.primary-button,
-.danger-button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 999px;
-  padding: 10px 16px;
-  color: #fff;
-  font-weight: 800;
-}
-
-.primary-button {
-  background: var(--accent-dark);
-}
-
-.primary-button:hover {
-  background: #a96300;
-}
-
-.danger-button {
-  background: var(--bad);
-}
-
-.danger-button:disabled {
+.secondary-button:disabled {
   cursor: not-allowed;
-  background: #d0d5dd;
-  color: #667085;
+  border-color: var(--line);
+  background: #f2f4f7;
+  color: #98a2b3;
 }
 
 .saved-records {
