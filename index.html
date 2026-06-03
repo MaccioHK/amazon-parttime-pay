@@ -25,15 +25,15 @@
       <label class="rate-field">
         Base rate per hour
         <span class="money-input">
-          <span aria-hidden="true">$</span>
-          <input id="base-rate" type="number" inputmode="decimal" min="0" step="0.01" value="20.00" aria-describedby="rate-help">
+          <span aria-hidden="true">£</span>
+          <input id="base-rate" type="number" inputmode="decimal" min="0" step="0.01" value="15.30" aria-describedby="rate-help">
         </span>
       </label>
       <label class="rolling-week-toggle">
-        <input id="rolling-week" type="checkbox">
+        <input id="rolling-week" type="checkbox" checked>
         Rolling week validation
       </label>
-      <p id="rate-help" class="help-text">Regular hours are paid at base rate. Night shift hours are paid 16% more, including extended hours on night shifts. Weekly hours above 40 and up to 50 are paid at 1.5×. Hours above 50 are paid at 2×. Turn on rolling week validation to also check Saturday night followed by Sunday morning.</p>
+      <p id="rate-help" class="help-text">Regular hours are paid at base rate. Night shift hours are paid 16% more, including extended hours on night shifts. Weekly hours above 40 and up to 50 are paid at 1.5×. Hours above 50 are paid at 2×. Rolling week validation is on by default, so Saturday night followed by Sunday morning is also checked.</p>
     </section>
 
     <section class="card" aria-labelledby="schedule-title">
@@ -70,7 +70,7 @@
           </div>
           <div>
             <dt>Total pay</dt>
-            <dd id="total-pay">$0.00</dd>
+            <dd id="total-pay">£0.00</dd>
           </div>
         </dl>
         <p id="breakdown" class="help-text"></p>
@@ -81,17 +81,17 @@
       <div class="section-heading">
         <div>
           <h2 id="saved-records-title">Saved schedules</h2>
-          <p class="muted">Saved rows display in a grid. Use the left radio button to populate the weekly schedule, tick rows to select them, and delete selected rows.</p>
+          <p class="muted">Saved rows display in a spreadsheet-style grid. Use the left radio button to populate the weekly schedule, tick rows to select them, and delete selected rows.</p>
         </div>
         <button id="delete-saved" type="button" class="secondary-button" disabled>Delete selected</button>
       </div>
       <div class="saved-grid-wrap">
         <div class="saved-grid" role="grid" aria-label="Saved schedules">
-          <div class="saved-grid-row saved-grid-header" role="row" style="display: grid; grid-template-columns: 44px 44px 90px 96px repeat(7, 105px) 86px 86px 96px 74px 74px 74px 100px minmax(220px, 1.4fr);">
+          <div class="saved-grid-row saved-grid-header" role="row" style="display: grid; grid-template-columns: 38px 38px 92px 52px repeat(7, 108px) 92px 92px 104px 82px 74px 74px 104px minmax(260px, 1fr);">
             <div aria-hidden="true"></div>
             <div aria-hidden="true"></div>
             <div role="columnheader">Base rate</div>
-            <div role="columnheader">Rolling week</div>
+            <div role="columnheader">RW</div>
             <div role="columnheader">Sunday</div>
             <div role="columnheader">Monday</div>
             <div role="columnheader">Tuesday</div>

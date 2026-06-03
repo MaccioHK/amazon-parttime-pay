@@ -308,33 +308,51 @@ h2 {
 .saved-grid-wrap {
   overflow-x: auto;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 14px;
   background: #fff;
 }
 
 .saved-grid {
-  min-width: 1450px;
-  font-size: 0.88rem;
+  min-width: 1560px;
+  font-size: 0.9rem;
 }
 
 .saved-grid-row {
   display: grid;
-  grid-template-columns: 44px 44px 90px 96px repeat(7, 105px) 86px 86px 96px 74px 74px 74px 100px minmax(220px, 1.4fr);
+  grid-template-columns: 38px 38px 92px 52px repeat(7, 108px) 92px 92px 104px 82px 74px 74px 104px minmax(260px, 1fr);
   align-items: stretch;
 }
 
 .saved-grid-row > div {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  min-width: 0;
   border-bottom: 1px solid var(--line);
   border-right: 1px solid var(--line);
-  padding: 12px 10px;
-  min-width: 0;
+  padding: 8px 12px;
+  background: #fff;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .saved-grid-row > div:last-child {
   border-right: 0;
 }
 
-.saved-grid-row:last-child > div {
+#saved-records-body .saved-grid-row:hover > div {
+  background: #fffaf2;
+}
+
+#saved-records-body .saved-grid-row:nth-child(even) > div {
+  background: #fcfcfd;
+}
+
+#saved-records-body .saved-grid-row:nth-child(even):hover > div {
+  background: #fffaf2;
+}
+
+#saved-records-body .saved-grid-row:last-child > div {
   border-bottom: 0;
 }
 
@@ -342,17 +360,18 @@ h2 {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: #f8fafc;
-  color: var(--muted);
-  font-size: 0.78rem;
+  color: var(--ink);
+  font-size: 0.86rem;
   font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+}
+
+.saved-grid-header > div {
+  background: #f8fafc;
 }
 
 .saved-grid-control {
-  display: grid;
-  place-items: center;
+  justify-content: center;
+  padding-inline: 6px;
 }
 
 .saved-grid-control input {
@@ -362,11 +381,17 @@ h2 {
 }
 
 .saved-grid-row .day-cell {
-  min-width: 105px;
+  min-width: 108px;
+}
+
+.saved-grid-row .numeric-cell {
+  justify-content: flex-end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .saved-grid-row .validation-cell {
-  min-width: 220px;
+  min-width: 260px;
   white-space: normal;
 }
 

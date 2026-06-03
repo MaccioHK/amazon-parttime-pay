@@ -5,7 +5,7 @@ const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
 const MAX_WEEKLY_HOURS = 58;
 const NIGHT_SHIFT_MULTIPLIER = 1.16;
-const SAVED_GRID_COLUMNS = "44px 44px 90px 96px repeat(7, 105px) 86px 86px 96px 74px 74px 74px 100px minmax(220px, 1.4fr)";
+const SAVED_GRID_COLUMNS = "38px 38px 92px 52px repeat(7, 108px) 92px 92px 104px 82px 74px 74px 104px minmax(260px, 1fr)";
 
 const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false }));
 const savedRecords = [];
@@ -33,9 +33,9 @@ function formatHours(value) {
 }
 
 function formatMoney(value) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-GB", {
     style: "currency",
-    currency: "USD",
+    currency: "GBP",
   }).format(value);
 }
 
@@ -297,8 +297,9 @@ function renderSavedRecords() {
 
     cells.forEach((cellText, cellIndex) => {
       const isDayCell = cellIndex >= 2 && cellIndex <= 8;
+      const isNumericCell = cellIndex >= 9 && cellIndex <= 14;
       const isValidationCell = cellIndex === cells.length - 1;
-      const className = isValidationCell ? "validation-cell" : isDayCell ? "day-cell" : "";
+      const className = isValidationCell ? "validation-cell" : isDayCell ? "day-cell" : isNumericCell ? "numeric-cell" : "";
       addGridCell(row, cellText, className);
     });
 
