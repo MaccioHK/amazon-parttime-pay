@@ -1,0 +1,393 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --ink: #172033;
+  --muted: #667085;
+  --line: #d9e2ef;
+  --accent: #ff9900;
+  --accent-dark: #cc7800;
+  --good: #067647;
+  --bad: #b42318;
+  --shadow: 0 20px 50px rgba(23, 32, 51, 0.08);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #fff2d7, transparent 32rem), var(--bg);
+  color: var(--ink);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0;
+}
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent-dark);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: clamp(2rem, 4vw, 4.2rem);
+  line-height: 1;
+}
+
+h2 {
+  margin-bottom: 8px;
+  font-size: 1.25rem;
+}
+
+.hero p:not(.eyebrow),
+.muted,
+.help-text {
+  color: var(--muted);
+}
+
+.hero p:not(.eyebrow) {
+  max-width: 780px;
+  font-size: 1.1rem;
+}
+
+.card {
+  margin-bottom: 20px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+}
+
+.controls,
+.section-heading,
+.results-layout {
+  display: grid;
+  gap: 20px;
+}
+
+.controls {
+  grid-template-columns: 1fr minmax(220px, 320px);
+  align-items: start;
+}
+
+.rate-field,
+.rolling-week-toggle {
+  font-weight: 700;
+}
+
+.rate-field {
+  display: grid;
+  gap: 8px;
+}
+
+.rolling-week-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: end;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.money-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.money-input input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  font-weight: 800;
+}
+
+.help-text {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+  font-size: 0.92rem;
+}
+
+.section-heading {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.secondary-button {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.secondary-button:hover {
+  border-color: var(--accent);
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.day-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fbfdff;
+}
+
+.day-card.is-worked {
+  border-color: var(--accent);
+  background: #fff8ec;
+}
+
+.work-toggle,
+.extend-toggle,
+.shift-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.work-toggle {
+  font-weight: 900;
+}
+
+.shift-options {
+  display: grid;
+  gap: 8px;
+}
+
+.day-card:not(.is-worked) .shift-options,
+.day-card:not(.is-worked) .extend-toggle {
+  opacity: 0.45;
+}
+
+.day-hours {
+  margin-bottom: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  font-weight: 900;
+}
+
+.results-layout {
+  grid-template-columns: 1fr 1fr;
+}
+
+.validation-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.validation-list li {
+  margin-bottom: 8px;
+}
+
+.validation-list .valid {
+  color: var(--good);
+}
+
+.validation-list .invalid {
+  color: var(--bad);
+  font-weight: 700;
+}
+
+.summary dl {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+.summary dl > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.summary dt {
+  color: var(--muted);
+}
+
+.summary dd {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 900;
+}
+
+@media (max-width: 980px) {
+  .schedule-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .controls,
+  .results-layout,
+  .section-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-actions {
+    justify-content: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100% - 20px, 1180px);
+    padding: 28px 0;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.schedule-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: end;
+}
+
+.primary-button,
+.danger-button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  color: #fff;
+  font-weight: 800;
+}
+
+.primary-button {
+  background: var(--accent-dark);
+}
+
+.primary-button:hover {
+  background: #a96300;
+}
+
+.danger-button {
+  background: var(--bad);
+}
+
+.danger-button:disabled {
+  cursor: not-allowed;
+  background: #d0d5dd;
+  color: #667085;
+}
+
+.saved-records {
+  overflow: hidden;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.saved-table {
+  width: 100%;
+  min-width: 1500px;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 0.88rem;
+}
+
+.saved-table th,
+.saved-table td {
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.saved-table th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.saved-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.saved-table th:last-child,
+.saved-table td:last-child {
+  border-right: 0;
+}
+
+.saved-table .load-button {
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #fff8ec;
+  color: var(--accent-dark);
+  font-weight: 800;
+}
+
+.saved-table .day-cell {
+  min-width: 120px;
+}
+
+.saved-table .validation-cell {
+  min-width: 220px;
+}
+
+@media (max-width: 980px) {
+  .schedule-actions {
+    justify-content: start;
+  }
+}
