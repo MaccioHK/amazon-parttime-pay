@@ -5,7 +5,7 @@ const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
 const MAX_WEEKLY_HOURS = 58;
 const NIGHT_SHIFT_MULTIPLIER = 1.16;
-const SAVED_GRID_COLUMNS = "38px 38px 92px 52px repeat(7, 108px) 92px 92px 104px 82px 74px 74px 104px minmax(260px, 1fr)";
+const SAVED_GRID_COLUMNS = "42px 42px 96px 54px repeat(7, 116px) 100px 100px 108px 86px 78px 78px 108px minmax(280px, 1fr)";
 
 const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false }));
 const savedRecords = [];
@@ -207,8 +207,8 @@ function getDaySummary(day) {
     return "Off";
   }
 
-  const shiftLabel = day.shift === "night" ? "Night" : "Morning";
-  const extendedLabel = day.extended ? ", extended" : "";
+  const shiftLabel = day.shift === "night" ? "N" : "M";
+  const extendedLabel = day.extended ? " Ext" : "";
 
   return `${shiftLabel}${extendedLabel} (${formatHours(getDayHours(day))}h)`;
 }

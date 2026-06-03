@@ -15,7 +15,7 @@ A small browser-based calculator for estimating Amazon part-time weekly income.
   - rolling week validation is enabled by default and checks Saturday night followed by Sunday morning,
   - maximum 58 working hours per week.
 - Shows total working hours, weighted paid hours, and total pay.
-- Saves multiple schedule snapshots in a scrollable grid, with radio-button controls to repopulate the schedule and checkboxes to delete selected rows.
+- Saves multiple schedule snapshots in a spreadsheet-style grid, with S/D columns for select/delete controls and compact M/N/Ext shift labels.
 
 ## Overtime rules
 

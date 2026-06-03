@@ -313,24 +313,24 @@ h2 {
 }
 
 .saved-grid {
-  min-width: 1560px;
+  min-width: 1690px;
   font-size: 0.9rem;
 }
 
 .saved-grid-row {
   display: grid;
-  grid-template-columns: 38px 38px 92px 52px repeat(7, 108px) 92px 92px 104px 82px 74px 74px 104px minmax(260px, 1fr);
+  grid-template-columns: 42px 42px 96px 54px repeat(7, 116px) 100px 100px 108px 86px 78px 78px 108px minmax(280px, 1fr);
   align-items: stretch;
 }
 
 .saved-grid-row > div {
   display: flex;
   align-items: center;
-  min-height: 42px;
+  min-height: 44px;
   min-width: 0;
   border-bottom: 1px solid var(--line);
   border-right: 1px solid var(--line);
-  padding: 8px 12px;
+  padding: 9px 12px;
   background: #fff;
   line-height: 1.2;
   overflow-wrap: anywhere;
@@ -361,12 +361,16 @@ h2 {
   top: 0;
   z-index: 1;
   color: var(--ink);
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 800;
 }
 
 .saved-grid-header > div {
+  align-items: flex-start;
   background: #f8fafc;
+  color: #667085;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .saved-grid-control {
@@ -381,7 +385,7 @@ h2 {
 }
 
 .saved-grid-row .day-cell {
-  min-width: 108px;
+  min-width: 116px;
 }
 
 .saved-grid-row .numeric-cell {
@@ -391,7 +395,7 @@ h2 {
 }
 
 .saved-grid-row .validation-cell {
-  min-width: 260px;
+  min-width: 280px;
   white-space: normal;
 }
 
