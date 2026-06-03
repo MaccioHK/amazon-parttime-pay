@@ -7,17 +7,22 @@ const MAX_WEEKLY_HOURS = 58;
 const NIGHT_SHIFT_MULTIPLIER = 1.16;
 
 const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false }));
+const savedRecords = [];
 
 const grid = document.querySelector("#schedule-grid");
 const template = document.querySelector("#day-card-template");
 const baseRateInput = document.querySelector("#base-rate");
 const rollingWeekInput = document.querySelector("#rolling-week");
+const saveButton = document.querySelector("#save-schedule");
 const resetButton = document.querySelector("#reset-schedule");
+const deleteSavedButton = document.querySelector("#delete-saved");
 const validationList = document.querySelector("#validation-list");
 const totalHoursOutput = document.querySelector("#total-hours");
 const paidHoursOutput = document.querySelector("#paid-hours");
 const totalPayOutput = document.querySelector("#total-pay");
 const breakdownOutput = document.querySelector("#breakdown");
+const savedRecordsBody = document.querySelector("#saved-records-body");
+const savedRecordsEmpty = document.querySelector("#saved-records-empty");
 
 function formatHours(value) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2);
@@ -173,6 +178,121 @@ function validateSchedule(totalHours) {
   return messages;
 }
 
+function cloneSchedule(days) {
+  return days.map((day) => ({ ...day }));
+}
+
+function createRecordId() {
+  if (globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function createSavedRecord(pay, validationMessages) {
+  return {
+    id: createRecordId(),
+    savedAt: new Date(),
+    baseRate: Math.max(Number(baseRateInput.value) || 0, 0),
+    rollingWeek: rollingWeekInput.checked,
+    schedule: cloneSchedule(state),
+    pay: { ...pay },
+    validationMessages: validationMessages.map((message) => ({ ...message })),
+    selectedForDelete: false,
+  };
+}
+
+function getDaySummary(day) {
+  if (!day.worked) {
+    return "Off";
+  }
+
+  const shiftLabel = day.shift === "night" ? "Night" : "Morning";
+  const extendedLabel = day.extended ? ", extended" : "";
+
+  return `${shiftLabel}${extendedLabel} (${formatHours(getDayHours(day))}h)`;
+}
+
+function getValidationSummary(messages) {
+  return messages.map((message) => message.text).join(" | ");
+}
+
+function populateSchedule(record) {
+  baseRateInput.value = record.baseRate.toFixed(2);
+  rollingWeekInput.checked = record.rollingWeek;
+  record.schedule.forEach((day, index) => {
+    state[index].worked = day.worked;
+    state[index].shift = day.shift;
+    state[index].extended = day.extended;
+  });
+  update();
+}
+
+function renderSavedRecords() {
+  savedRecordsBody.replaceChildren();
+  savedRecordsEmpty.hidden = savedRecords.length > 0;
+  deleteSavedButton.disabled = !savedRecords.some((record) => record.selectedForDelete);
+
+  savedRecords.forEach((record, recordIndex) => {
+    const row = document.createElement("tr");
+    const loadCell = document.createElement("td");
+    const deleteCell = document.createElement("td");
+    const loadButton = document.createElement("button");
+    const deleteCheckbox = document.createElement("input");
+
+    loadButton.type = "button";
+    loadButton.className = "load-button";
+    loadButton.textContent = "Select";
+    loadButton.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1}`);
+    loadButton.addEventListener("click", () => populateSchedule(record));
+    loadCell.append(loadButton);
+
+    deleteCheckbox.type = "checkbox";
+    deleteCheckbox.checked = record.selectedForDelete;
+    deleteCheckbox.setAttribute("aria-label", `Select saved schedule ${recordIndex + 1} for deletion`);
+    deleteCheckbox.addEventListener("change", () => {
+      record.selectedForDelete = deleteCheckbox.checked;
+      renderSavedRecords();
+    });
+    deleteCell.append(deleteCheckbox);
+
+    row.append(loadCell, deleteCell);
+
+    const cells = [
+      record.savedAt.toLocaleString(),
+      formatMoney(record.baseRate),
+      record.rollingWeek ? "On" : "Off",
+      ...record.schedule.map(getDaySummary),
+      formatHours(record.pay.totalHours),
+      formatHours(record.pay.paidHours),
+      formatMoney(record.pay.totalPay),
+      formatHours(record.pay.regularHours),
+      formatHours(record.pay.timeAndHalfHours),
+      formatHours(record.pay.doubleTimeHours),
+      formatHours(record.pay.nightPremiumHours),
+      getValidationSummary(record.validationMessages),
+    ];
+
+    cells.forEach((cellText, cellIndex) => {
+      const cell = document.createElement("td");
+      cell.textContent = cellText;
+
+      if (cellIndex >= 3 && cellIndex <= 9) {
+        cell.className = "day-cell";
+      }
+
+      if (cellIndex === cells.length - 1) {
+        cell.className = "validation-cell";
+      }
+
+      row.append(cell);
+    });
+
+    savedRecordsBody.append(row);
+  });
+}
+
 function renderValidation(messages) {
   validationList.replaceChildren();
 
@@ -241,7 +361,24 @@ function update() {
 
   renderScheduleCards();
   renderValidation(validationMessages);
+
+  return { pay, validationMessages };
 }
+
+saveButton.addEventListener("click", () => {
+  const { pay, validationMessages } = update();
+  savedRecords.push(createSavedRecord(pay, validationMessages));
+  renderSavedRecords();
+});
+
+deleteSavedButton.addEventListener("click", () => {
+  for (let index = savedRecords.length - 1; index >= 0; index -= 1) {
+    if (savedRecords[index].selectedForDelete) {
+      savedRecords.splice(index, 1);
+    }
+  }
+  renderSavedRecords();
+});
 
 resetButton.addEventListener("click", () => {
   state.forEach((day) => {
@@ -256,3 +393,4 @@ baseRateInput.addEventListener("input", update);
 rollingWeekInput.addEventListener("change", update);
 
 update();
+renderSavedRecords();

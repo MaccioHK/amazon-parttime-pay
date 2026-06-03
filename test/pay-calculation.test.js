@@ -92,6 +92,19 @@ function day(worked = true, shift = "morning", extended = false) {
   return { worked, shift, extended };
 }
 
+function cloneSchedule(days) {
+  return days.map((dayEntry) => ({ ...dayEntry }));
+}
+
+function createSavedRecordSnapshot(schedule, pay, validationMessages) {
+  return {
+    schedule: cloneSchedule(schedule),
+    pay: { ...pay },
+    validationMessages: validationMessages.map((message) => ({ ...message })),
+    selectedForDelete: false,
+  };
+}
+
 function findShiftSequenceErrors(days, rollingWeekEnabled) {
   const errors = [];
   const dayPairs = DAYS.slice(0, -1).map((_, index) => [index, index + 1]);
@@ -185,4 +198,18 @@ test("flags Saturday night followed by Sunday morning when rolling week is on", 
   assert.deepEqual(findShiftSequenceErrors(schedule, true), [
     "Saturday night shift cannot be followed by Sunday morning shift.",
   ]);
+});
+
+
+test("saved record snapshots keep an independent copy of the weekly schedule", () => {
+  const schedule = [day(true, "night", true), day(false)];
+  const pay = calculatePay(schedule, 20);
+  const record = createSavedRecordSnapshot(schedule, pay, [{ valid: true, text: "Schedule is valid and ready to calculate." }]);
+
+  schedule[0].shift = "morning";
+  schedule[0].extended = false;
+
+  assert.deepEqual(record.schedule[0], { worked: true, shift: "night", extended: true });
+  assert.equal(record.pay.totalHours, 10);
+  assert.equal(record.selectedForDelete, false);
 });

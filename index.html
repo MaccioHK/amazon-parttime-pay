@@ -26,7 +26,7 @@
         Base rate per hour
         <span class="money-input">
           <span aria-hidden="true">$</span>
-          <input id="base-rate" type="number" inputmode="decimal" min="0" step="0.01" value="15.30" aria-describedby="rate-help">
+          <input id="base-rate" type="number" inputmode="decimal" min="0" step="0.01" value="20.00" aria-describedby="rate-help">
         </span>
       </label>
       <label class="rolling-week-toggle">
@@ -42,7 +42,10 @@
           <h2 id="schedule-title">Weekly schedule</h2>
           <p class="muted">Validation: max 6 consecutive worked days, night shifts cannot be followed by morning shifts, and weekly hours cannot exceed 58.</p>
         </div>
-        <button id="reset-schedule" type="button" class="secondary-button">Clear schedule</button>
+        <div class="schedule-actions">
+          <button id="save-schedule" type="button" class="primary-button">Save</button>
+          <button id="reset-schedule" type="button" class="secondary-button">Clear schedule</button>
+        </div>
       </div>
 
       <div class="schedule-grid" id="schedule-grid" role="group" aria-label="Daily shift schedule"></div>
@@ -72,6 +75,46 @@
         </dl>
         <p id="breakdown" class="help-text"></p>
       </section>
+    </section>
+
+    <section class="card saved-records" aria-labelledby="saved-records-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="saved-records-title">Saved schedules</h2>
+          <p class="muted">Saved rows work like an Excel sheet. Use Select to populate the weekly schedule, tick rows to select them, and delete selected rows.</p>
+        </div>
+        <button id="delete-saved" type="button" class="danger-button" disabled>Delete selected</button>
+      </div>
+      <div class="table-wrap">
+        <table class="saved-table">
+          <thead>
+            <tr>
+              <th scope="col">Select</th>
+              <th scope="col">Delete</th>
+              <th scope="col">Saved</th>
+              <th scope="col">Base rate</th>
+              <th scope="col">Rolling week</th>
+              <th scope="col">Sunday</th>
+              <th scope="col">Monday</th>
+              <th scope="col">Tuesday</th>
+              <th scope="col">Wednesday</th>
+              <th scope="col">Thursday</th>
+              <th scope="col">Friday</th>
+              <th scope="col">Saturday</th>
+              <th scope="col">Total working hour</th>
+              <th scope="col">Total paid hour</th>
+              <th scope="col">Total pay</th>
+              <th scope="col">Regular</th>
+              <th scope="col">1.5×</th>
+              <th scope="col">2×</th>
+              <th scope="col">Night premium</th>
+              <th scope="col">Validation</th>
+            </tr>
+          </thead>
+          <tbody id="saved-records-body"></tbody>
+        </table>
+      </div>
+      <p id="saved-records-empty" class="help-text">No saved schedules yet. Click Save to add the current weekly schedule.</p>
     </section>
   </main>
 
