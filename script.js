@@ -376,6 +376,13 @@ function renderScheduleCards() {
 
     workedInput.addEventListener("change", () => {
       state[index].worked = workedInput.checked;
+
+      if (workedInput.checked) {
+        state[index].shift = "morning";
+        state[index].hours = DEFAULT_SHIFT_HOURS;
+        state[index].extended = false;
+      }
+
       update();
     });
 

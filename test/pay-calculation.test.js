@@ -2,6 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const DEFAULT_SHIFT_HOURS = 8;
+const MIN_SHIFT_HOURS = 1;
+const MAX_SHIFT_HOURS = 10;
 const EXTENDED_HOURS = 2;
 const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
@@ -219,4 +221,12 @@ test("uses selected hours instead of shift type for daily hours", () => {
   assert.equal(getDayHours(day(true, "morning", false, 6)), 6);
   assert.equal(getDayHours(day(true, "night", false, 6)), 6);
   assert.equal(getDayHours(day(true, "night", true, 6)), 8);
+});
+
+
+test("selected hours support the 1 to 10 dropdown range while defaulting to 8", () => {
+  assert.equal(MIN_SHIFT_HOURS, 1);
+  assert.equal(DEFAULT_SHIFT_HOURS, 8);
+  assert.equal(MAX_SHIFT_HOURS, 10);
+  assert.equal(getDayHours(day(true, "morning", false, MAX_SHIFT_HOURS)), 10);
 });
