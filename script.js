@@ -1,5 +1,7 @@
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const SHIFT_HOURS = 8;
+const DEFAULT_SHIFT_HOURS = 8;
+const MIN_SHIFT_HOURS = 1;
+const MAX_SHIFT_HOURS = 10;
 const EXTENDED_HOURS = 2;
 const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
@@ -7,7 +9,7 @@ const MAX_WEEKLY_HOURS = 58;
 const NIGHT_SHIFT_MULTIPLIER = 1.16;
 const SAVED_GRID_COLUMNS = "42px 42px 96px 54px repeat(7, 116px) 100px 100px 108px 86px 78px 78px 108px 280px";
 
-const state = DAYS.map(() => ({ worked: false, shift: "morning", extended: false }));
+const state = DAYS.map(() => ({ worked: false, shift: "morning", hours: DEFAULT_SHIFT_HOURS, extended: false }));
 const savedRecords = [];
 let selectedSavedRecordId = null;
 
@@ -48,7 +50,7 @@ function getDayHours(day) {
     return 0;
   }
 
-  return SHIFT_HOURS + (day.extended ? EXTENDED_HOURS : 0);
+  return day.hours + (day.extended ? EXTENDED_HOURS : 0);
 }
 
 function getOvertimeMultiplier(hourIndex) {
@@ -335,6 +337,7 @@ function renderScheduleCards() {
     const card = template.content.firstElementChild.cloneNode(true);
     const workedInput = card.querySelector(".worked-input");
     const shiftInputs = card.querySelectorAll(".shift-input");
+    const hoursInput = card.querySelector(".hours-input");
     const extendInput = card.querySelector(".extend-input");
     const dayName = card.querySelector(".day-name");
     const dayHours = card.querySelector(".day-hours");
@@ -343,6 +346,18 @@ function renderScheduleCards() {
     dayName.textContent = DAYS[index];
     workedInput.checked = day.worked;
     workedInput.setAttribute("aria-label", `Work on ${DAYS[index]}`);
+    hoursInput.replaceChildren();
+
+    for (let hour = MIN_SHIFT_HOURS; hour <= MAX_SHIFT_HOURS; hour += 1) {
+      const option = document.createElement("option");
+      option.value = String(hour);
+      option.textContent = String(hour);
+      hoursInput.appendChild(option);
+    }
+
+    hoursInput.value = String(day.hours);
+    hoursInput.disabled = !day.worked;
+    hoursInput.setAttribute("aria-label", `${DAYS[index]} selected hours`);
     extendInput.checked = day.extended;
     extendInput.disabled = !day.worked;
     extendInput.setAttribute("aria-label", `Extend ${DAYS[index]} shift by 2 hours`);
@@ -361,6 +376,11 @@ function renderScheduleCards() {
 
     workedInput.addEventListener("change", () => {
       state[index].worked = workedInput.checked;
+      update();
+    });
+
+    hoursInput.addEventListener("change", () => {
+      state[index].hours = Number(hoursInput.value);
       update();
     });
 
@@ -441,6 +461,7 @@ resetButton.addEventListener("click", () => {
   state.forEach((day) => {
     day.worked = false;
     day.shift = "morning";
+    day.hours = DEFAULT_SHIFT_HOURS;
     day.extended = false;
   });
   update();

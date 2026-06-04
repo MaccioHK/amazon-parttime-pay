@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const SHIFT_HOURS = 8;
+const DEFAULT_SHIFT_HOURS = 8;
 const EXTENDED_HOURS = 2;
 const REGULAR_LIMIT = 40;
 const TIME_AND_HALF_LIMIT = 50;
@@ -17,7 +17,7 @@ function getDayHours(day) {
     return 0;
   }
 
-  return SHIFT_HOURS + (day.extended ? EXTENDED_HOURS : 0);
+  return day.hours + (day.extended ? EXTENDED_HOURS : 0);
 }
 
 function getOvertimeMultiplier(hourIndex) {
@@ -88,8 +88,8 @@ function calculatePay(days, baseRate) {
   };
 }
 
-function day(worked = true, shift = "morning", extended = false) {
-  return { worked, shift, extended };
+function day(worked = true, shift = "morning", extended = false, hours = DEFAULT_SHIFT_HOURS) {
+  return { worked, shift, hours, extended };
 }
 
 function cloneSchedule(days) {
@@ -209,7 +209,14 @@ test("saved record snapshots keep an independent copy of the weekly schedule", (
   schedule[0].shift = "morning";
   schedule[0].extended = false;
 
-  assert.deepEqual(record.schedule[0], { worked: true, shift: "night", extended: true });
+  assert.deepEqual(record.schedule[0], { worked: true, shift: "night", hours: 8, extended: true });
   assert.equal(record.pay.totalHours, 10);
   assert.equal(record.selectedForDelete, false);
+});
+
+
+test("uses selected hours instead of shift type for daily hours", () => {
+  assert.equal(getDayHours(day(true, "morning", false, 6)), 6);
+  assert.equal(getDayHours(day(true, "night", false, 6)), 6);
+  assert.equal(getDayHours(day(true, "night", true, 6)), 8);
 });

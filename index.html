@@ -13,7 +13,7 @@
       <h1 id="page-title">Amazon part-time pay calculator</h1>
       <p>
         Enter your base hourly rate, choose the days you work, and mark each shift as morning or night.
-        Every shift counts as 8 hours, and an extended shift adds 2 more hours.
+        Choose each worked day's hours from 1 to 10. Morning/night only controls the night premium, and an extended shift adds 2 more hours.
       </p>
     </section>
 
@@ -33,7 +33,7 @@
         <input id="rolling-week" type="checkbox" checked>
         Rolling week validation
       </label>
-      <p id="rate-help" class="help-text">Regular hours are paid at base rate. Night shift hours are paid 16% more, including extended hours on night shifts. Weekly hours above 40 and up to 50 are paid at 1.5×. Hours above 50 are paid at 2×. Rolling week validation is on by default, so Saturday night followed by Sunday morning is also checked.</p>
+      <p id="rate-help" class="help-text">Regular hours are paid at base rate. Night shift hours are paid 16% more, including selected hours and extended hours on night shifts. Weekly hours above 40 and up to 50 are paid at 1.5×. Hours above 50 are paid at 2×. Rolling week validation is on by default, so Saturday night followed by Sunday morning is also checked.</p>
     </section>
 
     <section class="card" aria-labelledby="schedule-title">
@@ -132,6 +132,10 @@
           Night
         </label>
       </div>
+      <label class="hours-field">
+        Hours
+        <select class="hours-input" aria-label="Shift hours"></select>
+      </label>
       <label class="extend-toggle">
         <input type="checkbox" class="extend-input">
         Extended shift (+2h)
